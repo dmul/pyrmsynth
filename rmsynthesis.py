@@ -487,6 +487,7 @@ def rmsynthesis(params, options, manual=False):
 
     print 'RM synthesis done!  Writing out FITS files...'
     write_output_files(dfcube, params, thead)
+    # write_output_files(dfcube, params, thead) clean components
     if params.do_clean:
         print 'Writing out CC list...'
         # TODO: need to make this usable!
@@ -681,8 +682,10 @@ def generate_header(hdu, inhead, params):
     rmsf = 2. * math.sqrt(3) / delta_l2
     maxscale = numpy.pi / l2min
 
-    hdu.header.update('SFFWHM', rmsf,
-                      'FWHM of the RM spread function, rad/m/m')
+    hdu.header.update('TSFFWHM', rmsf,
+                      'FWHM of the theortical RM spread function, rad/m/m')
+    hdu.header.update('FSFFWHM', rmsf,
+                      'FWHM of the fitted RM spread function, rad/m/m')
     hdu.header.update('MAXSCL', maxscale, 'Maximum scale in Faraday depth, ' +
                       'rad/m/m')
 
