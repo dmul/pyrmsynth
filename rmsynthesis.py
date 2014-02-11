@@ -484,7 +484,10 @@ def rmsynthesis(params, options, manual=False):
         pcent = 100. * (indx + 1.) * (jndx + 1.) / (rasz[1] - rasz[0]) /\
              (decsz[1] - decsz[0])
         progress(20, pcent)
-
+    print 'Theoretical RMSF is'+str(rmsf)+'rad/m^2'
+    print 'Max observable scale is'+str(maxscale)+'rad/m^2'
+    if params.do_clean:
+        print 'Fitted RMSF is'+str(fwhm_restoring_sf)+'rad/m^2'
     print 'RM synthesis done!  Writing out FITS files...'
     write_output_files(dfcube, params, thead)
     # write_output_files(dfcube, params, thead) clean components
@@ -684,14 +687,14 @@ def generate_header(hdu, inhead, params):
 
     hdu.header.update('TSFFWHM', rmsf,
                       'FWHM of the theortical RM spread function, rad/m/m')
-    hdu.header.update('FSFFWHM', rmsf,
-                      'FWHM of the fitted RM spread function, rad/m/m')
+        
     hdu.header.update('MAXSCL', maxscale, 'Maximum scale in Faraday depth, ' +
                       'rad/m/m')
 
     hdu.header.add_history('RMSYNTH: RM Synthesis performed by ' +
                            'rmsynthesis.py version ' + str(VERSION) + '.')
     if params.do_clean:
+        hdu.header.update('FSFFWHM', fwhm_restoring_sf, 'FWHM of the fitted RM spread function, rad/m/m')
         hdu.header.add_history('   RM Clean performed. niter=' +
                                str(params.niter) +
                                ', gain=' + str(params.gain) + ', cutoff=' +
