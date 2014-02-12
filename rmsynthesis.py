@@ -490,6 +490,9 @@ def rmsynthesis(params, options, manual=False):
         print 'Fitted RMSF is'+str(fwhm_restoring_sf)+'rad/m^2'
     print 'RM synthesis done!  Writing out FITS files...'
     write_output_files(dfcube, params, thead)
+    if params.do_clean:
+        write_residualoutput_files(residual_map, params, thead)
+        write_ccoutput_files(clean_map, params, thead)
     # write_output_files(dfcube, params, thead) clean components
     if params.do_clean:
         print 'Writing out CC list...'
@@ -584,6 +587,77 @@ def write_output_files(cube, params, inhead):
         print "Unexpected error:", sys.exc_info()[0]
     hdu_p_list = pyfits.HDUList([hdu_p])
     hdu_p_list.writeto(params.outputfn + '_p.fits', clobber=True)
+
+
+
+def write_residualoutput_files(cube, params, inhead):
+    """
+    """
+
+    hdu_q = pyfits.PrimaryHDU(cube.real)
+    try:
+        generate_header(hdu_q, inhead, params)
+    except:
+        print "Warning: There was a problem generating the header, no " + \
+            "header information stored!"
+        print "Unexpected error:", sys.exc_info()[0]
+    hdu_q_list = pyfits.HDUList([hdu_q])
+    hdu_q_list.writeto(params.outputfn + 'residual_q.fits', clobber=True)
+
+    hdu_main = pyfits.PrimaryHDU(cube.imag)
+    try:
+        generate_header(hdu_main, inhead, params)
+    except:
+        print "Warning: There was a problem generating the header, no " + \
+            "header information stored!"
+        print "Unexpected error:", sys.exc_info()[0]
+    hdu_list = pyfits.HDUList([hdu_main])
+    hdu_list.writeto(params.outputfn + 'residual_u.fits', clobber=True)
+
+    hdu_p = pyfits.PrimaryHDU(abs(cube))
+    try:
+        generate_header(hdu_p, inhead, params)
+    except:
+        print "Warning: There was a problem generating the header, no " + \
+            "header information stored!"
+        print "Unexpected error:", sys.exc_info()[0]
+    hdu_p_list = pyfits.HDUList([hdu_p])
+    hdu_p_list.writeto(params.outputfn + 'residual_p.fits', clobber=True)
+
+
+def write_ccoutput_files(cube, params, inhead):
+    """
+    """
+
+    hdu_q = pyfits.PrimaryHDU(cube.real)
+    try:
+        generate_header(hdu_q, inhead, params)
+    except:
+        print "Warning: There was a problem generating the header, no " + \
+            "header information stored!"
+        print "Unexpected error:", sys.exc_info()[0]
+    hdu_q_list = pyfits.HDUList([hdu_q])
+    hdu_q_list.writeto(params.outputfn + 'cc_q.fits', clobber=True)
+
+    hdu_main = pyfits.PrimaryHDU(cube.imag)
+    try:
+        generate_header(hdu_main, inhead, params)
+    except:
+        print "Warning: There was a problem generating the header, no " + \
+            "header information stored!"
+        print "Unexpected error:", sys.exc_info()[0]
+    hdu_list = pyfits.HDUList([hdu_main])
+    hdu_list.writeto(params.outputfn + 'cc_u.fits', clobber=True)
+
+    hdu_p = pyfits.PrimaryHDU(abs(cube))
+    try:
+        generate_header(hdu_p, inhead, params)
+    except:
+        print "Warning: There was a problem generating the header, no " + \
+            "header information stored!"
+        print "Unexpected error:", sys.exc_info()[0]
+    hdu_p_list = pyfits.HDUList([hdu_p])
+    hdu_p_list.writeto(params.outputfn + 'cc_p.fits', clobber=True)
 
 
 def generate_v_header(hdu, inhead, params):
